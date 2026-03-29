@@ -48,8 +48,7 @@ export default function TimelinePage() {
       setLogs(logRes.logs);
 
       // Fetch plans
-      const backend = process.env.NEXT_PUBLIC_BACKEND_URL ?? 'http://localhost:8080';
-      const planRes = await fetch(`${backend}/api/v1/plans?date=${dateStr}`);
+      const planRes = await fetch(`/api/v1/plans?date=${dateStr}`);
       const planData = await planRes.json();
       setPlans(planData ?? []);
     } catch (e) {

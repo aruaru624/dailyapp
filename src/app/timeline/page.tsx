@@ -7,8 +7,6 @@ import { format, subDays, addDays, isSameDay, startOfMonth, endOfMonth, eachDayO
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Clock, ZoomIn, ZoomOut, StickyNote, Save } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export const dynamic = 'force-dynamic';
-
 interface DailyPlan {
   id: string;
   activityId: string;

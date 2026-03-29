@@ -6,8 +6,6 @@ import { Activity, ActivityLog } from '@/gen/activity/v1/activity_pb';
 import { motion } from 'framer-motion';
 import { Play, Square } from 'lucide-react';
 
-export const dynamic = 'force-dynamic';
-
 export default function HomePage() {
   const [activities, setActivities] = useState<Activity[]>([]);
   const [activeLogs, setActiveLogs] = useState<Record<string, ActivityLog>>({});

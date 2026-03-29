@@ -6,8 +6,6 @@ import { Activity } from '@/gen/activity/v1/activity_pb';
 import { Plus, Trash2, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export const dynamic = 'force-dynamic';
-
 const PRESET_COLORS = [
   '#ef4444', '#f97316', '#f59e0b', '#84cc16', '#22c55e',
   '#06b6d4', '#3b82f6', '#6366f1', '#a855f7', '#ec4899',

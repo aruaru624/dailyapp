@@ -16,8 +16,6 @@ const SCALE_MIN = 0.5;
 const SCALE_MAX = 3;
 const DURATION_PRESETS = [15, 30, 45, 60, 90, 120];
 
-export const dynamic = 'force-dynamic';
-
 interface DailyPlan {
   id: string;
   activityId: string;

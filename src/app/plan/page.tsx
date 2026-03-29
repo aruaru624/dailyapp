@@ -9,6 +9,7 @@ import {
   eachDayOfInterval, addMonths, subMonths
 } from 'date-fns';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Trash2, ZoomIn, ZoomOut, Clock } from 'lucide-react';
+import { apiUrl } from '@/api/url';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const SCALE_MIN = 0.5;
@@ -70,7 +71,7 @@ export default function PlanPage() {
     setLoading(true);
     try {
       const dateStr = format(currentDate, 'yyyy-MM-dd');
-      const res = await fetch(`/api/v1/plans?date=${dateStr}`);
+      const res = await fetch(apiUrl(`/api/v1/plans?date=${dateStr}`));
       const data = await res.json();
       setPlans(data ?? []);
     } catch (e) { console.error(e); }
@@ -142,7 +143,7 @@ export default function PlanPage() {
     setSaving(true);
     try {
       const isEdit = !!popover.id;
-      const url = isEdit ? `/api/v1/plans?id=${popover.id}` : `/api/v1/plans`;
+      const url = apiUrl(isEdit ? `/api/v1/plans?id=${popover.id}` : `/api/v1/plans`);
       const res = await fetch(url, {
         method: isEdit ? 'PATCH' : 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -169,7 +170,7 @@ export default function PlanPage() {
   const handleDelete = async (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
     try {
-      await fetch(`/api/v1/plans?id=${id}`, { method: 'DELETE' });
+      await fetch(apiUrl(`/api/v1/plans?id=${id}`), { method: 'DELETE' });
       setPlans(prev => prev.filter(p => p.id !== id));
     } catch (e) { console.error(e); }
   };

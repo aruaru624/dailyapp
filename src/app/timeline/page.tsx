@@ -5,6 +5,7 @@ import { activityClient } from '@/api/client';
 import { Activity, ActivityLog } from '@/gen/activity/v1/activity_pb';
 import { format, subDays, addDays, isSameDay, startOfMonth, endOfMonth, eachDayOfInterval, startOfWeek, endOfWeek, isSameMonth, getMonth, getYear, addMonths, subMonths } from 'date-fns';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Clock, ZoomIn, ZoomOut, StickyNote, Save } from 'lucide-react';
+import { apiUrl } from '@/api/url';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface DailyPlan {
@@ -48,7 +49,7 @@ export default function TimelinePage() {
       setLogs(logRes.logs);
 
       // Fetch plans
-      const planRes = await fetch(`/api/v1/plans?date=${dateStr}`);
+      const planRes = await fetch(apiUrl(`/api/v1/plans?date=${dateStr}`));
       const planData = await planRes.json();
       setPlans(planData ?? []);
     } catch (e) {

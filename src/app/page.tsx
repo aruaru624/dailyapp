@@ -1,10 +1,12 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { activityClient } from '@/api/client';
 import { Activity, ActivityLog } from '@/gen/activity/v1/activity_pb';
 import { motion } from 'framer-motion';
 import { Play, Square } from 'lucide-react';
+
+export const dynamic = 'force-dynamic';
 
 export default function HomePage() {
   const [activities, setActivities] = useState<Activity[]>([]);
@@ -17,11 +19,7 @@ export default function HomePage() {
     return () => clearInterval(timer);
   }, []);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const res = await activityClient.listActivities({});
       setActivities(res.activities);
@@ -41,7 +39,11 @@ export default function HomePage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const overrideActiveLog = (activityId: string, log: ActivityLog | null) => {
     setActiveLogs(prev => {

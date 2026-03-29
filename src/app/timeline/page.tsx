@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useState, useRef, useMemo } from 'react';
+import { useCallback, useEffect, useState, useRef, useMemo } from 'react';
 import { activityClient } from '@/api/client';
 import { Activity, ActivityLog } from '@/gen/activity/v1/activity_pb';
 import { format, subDays, addDays, isSameDay, startOfMonth, endOfMonth, eachDayOfInterval, startOfWeek, endOfWeek, isSameMonth, getMonth, getYear, addMonths, subMonths } from 'date-fns';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Clock, ZoomIn, ZoomOut, StickyNote, Save } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+
+export const dynamic = 'force-dynamic';
 
 interface DailyPlan {
   id: string;
@@ -33,23 +35,7 @@ export default function TimelinePage() {
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    fetchData();
-  }, [currentDate]);
-
-  useEffect(() => {
-    const timer = setInterval(() => setNow(new Date()), 60000);
-    return () => clearInterval(timer);
-  }, []);
-
-  useEffect(() => {
-    if (!loading && isSameDay(currentDate, new Date()) && scrollContainerRef.current) {
-      const top = (now.getHours() * 60 + now.getMinutes()) * scale;
-      scrollContainerRef.current.scrollTop = Math.max(0, top - 200);
-    }
-  }, [loading, currentDate]);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true);
     try {
       const actRes = await activityClient.listActivities({});
@@ -73,7 +59,23 @@ export default function TimelinePage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentDate]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  useEffect(() => {
+    const timer = setInterval(() => setNow(new Date()), 60000);
+    return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!loading && isSameDay(currentDate, new Date()) && scrollContainerRef.current) {
+      const top = (now.getHours() * 60 + now.getMinutes()) * scale;
+      scrollContainerRef.current.scrollTop = Math.max(0, top - 200);
+    }
+  }, [loading, currentDate, scale, now]);
 
   const handlePrevDay = () => setCurrentDate(prev => subDays(prev, 1));
   const handleNextDay = () => setCurrentDate(prev => addDays(prev, 1));

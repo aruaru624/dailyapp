@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef, useMemo } from 'react';
+import { useCallback, useEffect, useState, useRef, useMemo } from 'react';
 import { activityClient } from '@/api/client';
 import { Activity } from '@/gen/activity/v1/activity_pb';
 import {
@@ -15,6 +15,8 @@ const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL ?? 'http://localhost:8080';
 const SCALE_MIN = 0.5;
 const SCALE_MAX = 3;
 const DURATION_PRESETS = [15, 30, 45, 60, 90, 120];
+
+export const dynamic = 'force-dynamic';
 
 interface DailyPlan {
   id: string;
@@ -67,9 +69,20 @@ export default function PlanPage() {
     activityClient.listActivities({}).then(res => setActivities(res.activities));
   }, []);
 
+  const fetchPlans = useCallback(async () => {
+    setLoading(true);
+    try {
+      const dateStr = format(currentDate, 'yyyy-MM-dd');
+      const res = await fetch(`${BACKEND}/api/v1/plans?date=${dateStr}`);
+      const data = await res.json();
+      setPlans(data ?? []);
+    } catch (e) { console.error(e); }
+    finally { setLoading(false); }
+  }, [currentDate]);
+
   useEffect(() => {
     fetchPlans();
-  }, [currentDate]);
+  }, [fetchPlans]);
 
   useEffect(() => {
     if (!showCalendar) return;
@@ -94,18 +107,7 @@ export default function PlanPage() {
       const top = (now.getHours() * 60 + now.getMinutes()) * scale;
       scrollRef.current.scrollTop = Math.max(0, top - 200);
     }
-  }, [loading, scale]);
-
-  const fetchPlans = async () => {
-    setLoading(true);
-    try {
-      const dateStr = format(currentDate, 'yyyy-MM-dd');
-      const res = await fetch(`${BACKEND}/api/v1/plans?date=${dateStr}`);
-      const data = await res.json();
-      setPlans(data ?? []);
-    } catch (e) { console.error(e); }
-    finally { setLoading(false); }
-  };
+  }, [loading, scale, now]);
 
   const handleGridClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!gridRef.current || activities.length === 0) return;

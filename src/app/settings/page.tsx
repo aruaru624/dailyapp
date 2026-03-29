@@ -1,10 +1,12 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { activityClient } from '@/api/client';
 import { Activity } from '@/gen/activity/v1/activity_pb';
 import { Plus, Trash2, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+
+export const dynamic = 'force-dynamic';
 
 const PRESET_COLORS = [
   '#ef4444', '#f97316', '#f59e0b', '#84cc16', '#22c55e',
@@ -20,11 +22,7 @@ export default function SettingsPage() {
   const [newName, setNewName] = useState('');
   const [newColor, setNewColor] = useState(PRESET_COLORS[0]);
 
-  useEffect(() => {
-    fetchActivities();
-  }, []);
-
-  const fetchActivities = async () => {
+  const fetchActivities = useCallback(async () => {
     try {
       const res = await activityClient.listActivities({});
       setActivities(res.activities);
@@ -33,7 +31,11 @@ export default function SettingsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchActivities();
+  }, [fetchActivities]);
 
   const handleCreate = async () => {
     if (!newName.trim()) return;

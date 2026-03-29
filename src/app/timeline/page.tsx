@@ -448,7 +448,7 @@ export default function TimelinePage() {
             </div>
             
             {logs.length === 0 && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-slate-500 pointer-events-none z-40 bg-white/50 backdrop-blur-sm">
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-slate-500 pointer-events-none z-40">
                 <Clock className="w-16 h-16 mb-5 text-slate-300" />
                 <p className="text-xl font-bold text-slate-700">No activity recorded</p>
                 <p className="text-slate-400 mt-1">Select another date to view history.</p>
